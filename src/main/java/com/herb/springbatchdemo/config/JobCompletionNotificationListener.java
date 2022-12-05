@@ -1,6 +1,6 @@
 package com.herb.springbatchdemo.config;
 
-import com.herb.springbatchdemo.model.Coffee;
+import com.herb.springbatchdemo.model.Person;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.BatchStatus;
@@ -26,11 +26,13 @@ public class JobCompletionNotificationListener extends JobExecutionListenerSuppo
         if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
             LOGGER.info("!!! JOB FINISHED! Time to verify the results");
 
-            String query = "SELECT brand, origin, characteristics FROM coffee";
+            String query = "SELECT first_name, last_name FROM people";
 
-            jdbcTemplate.query(query, (rs, row) -> new Coffee(rs.getString(1), rs.getString(2),
-                    rs.getString(3)))
-                    .forEach(coffee -> LOGGER.info("Found < {} > in the database.", coffee));
+            jdbcTemplate.query(query,
+                            (rs, row) -> new Person(
+                                    rs.getString(1),
+                                    rs.getString(2)))
+                    .forEach(person -> LOGGER.info("Found < {} > in the database.", person));
         }
     }
 }

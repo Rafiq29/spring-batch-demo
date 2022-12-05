@@ -1,6 +1,6 @@
 package com.herb.springbatchdemo.config;
 
-import com.herb.springbatchdemo.model.Coffee;
+import com.herb.springbatchdemo.model.Person;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -36,12 +36,12 @@ public class BatchConfiguration {
 
     @Bean
     public FlatFileItemReader reader() {
-        return new FlatFileItemReaderBuilder().name("coffeeItemReader")
+        return new FlatFileItemReaderBuilder().name("personItemReader")
                 .resource(new ClassPathResource(fileInput))
                 .delimited()
-                .names(new String[] {"brand", "origin", "characteristics"})
+                .names(new String[] {"firstName", "lastName"})
                 .fieldSetMapper(new BeanWrapperFieldSetMapper() {{
-                    setTargetType(Coffee.class);
+                    setTargetType(Person.class);
                 }})
                 .build();
     }
@@ -50,7 +50,7 @@ public class BatchConfiguration {
     public JdbcBatchItemWriter writer(DataSource dataSource) {
         return new JdbcBatchItemWriterBuilder()
                 .itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider())
-                .sql("INSERT INTO coffee (brand, origin, characteristics) VALUES (:brand, :origin, :characteristics)")
+                .sql("INSERT INTO people (first_name, last_name) VALUES (:firstName, :lastName)")
                 .dataSource(dataSource)
                 .build();
     }
@@ -68,7 +68,7 @@ public class BatchConfiguration {
     @Bean
     public Step step1(JdbcBatchItemWriter writer) {
         return stepBuilderFactory.get("step1")
-                .<Coffee, Coffee> chunk(10)
+                .<Person, Person> chunk(10)
                 .reader(reader())
                 .processor(processor())
                 .writer(writer)
@@ -76,7 +76,7 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public CoffeeItemProcessor processor() {
-        return new CoffeeItemProcessor();
+    public PersonItemProcessor processor() {
+        return new PersonItemProcessor();
     }
 }
