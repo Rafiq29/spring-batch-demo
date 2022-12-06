@@ -16,3 +16,13 @@ CREATE TABLE people
     first_name VARCHAR(20),
     last_name  VARCHAR(20)
 );
+
+CREATE TABLE TUTORIALS
+(
+    tutorial_id          SERIAL PRIMARY KEY,
+    tutorial_author      VARCHAR(20),
+    tutorial_title       VARCHAR(50),
+    submission_date      VARCHAR(20),
+    tutorial_icon        VARCHAR(200),
+    tutorial_description VARCHAR(1000)
+);

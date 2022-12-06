@@ -1,6 +1,7 @@
 package com.herb.springbatchdemo.config;
 
 import com.herb.springbatchdemo.model.Person;
+import com.herb.springbatchdemo.model.Tutorial;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.BatchStatus;
@@ -26,13 +27,19 @@ public class JobCompletionNotificationListener extends JobExecutionListenerSuppo
         if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
             LOGGER.info("!!! JOB FINISHED! Time to verify the results");
 
-            String query = "SELECT first_name, last_name FROM people";
+            String query = "SELECT tutorial_id, tutorial_author, tutorial_title, submission_date, tutorial_icon, tutorial_description " +
+                    "FROM tutorials";
 
             jdbcTemplate.query(query,
-                            (rs, row) -> new Person(
-                                    rs.getString(1),
-                                    rs.getString(2)))
-                    .forEach(person -> LOGGER.info("Found < {} > in the database.", person));
+                            (rs, row) -> new Tutorial(
+                                    rs.getInt(1),
+                                    rs.getString(2),
+                                    rs.getString(3),
+                                    rs.getString(4),
+                                    rs.getString(5),
+                                    rs.getString(6)
+                                    ))
+                    .forEach(tutorial -> LOGGER.info("Found < {} > in the database.", tutorial));
         }
     }
 }
